@@ -17,7 +17,7 @@ predictContinuous(object, newdata = NULL, nq = 25)
 \item{mest}{Conditional expectations}
 }
 \description{
-Compute the conditional expectation of a copula-based  2-level hierarchical model for disctrete response.
+Compute the conditional expectation of a copula-based  2-level hierarchical model for continuous response.
 }
 \examples{
 data(out.normal)

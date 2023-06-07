@@ -1,9 +1,9 @@
-f88454adaf0c6d7bb8deb3164c62061f *DESCRIPTION
-3367cbda12ec1aedf66980cb660f9c2e *NAMESPACE
+f3ace739c79be912e9065baba9345d74 *DESCRIPTION
+d6729dbe6cbfc77c985f920fff95881a *NAMESPACE
 dbe6209a8b3828a359dec811796e268b *R/EstContinuous.R
-d898024d62a7f1f336069ee79f14d00c *R/EstDiscrete.R
-1d7fbc537fbaa5a0617bf5402158498e *R/MAP.continuous.R
-2706cb4973b789ac728ea343c4e20eb0 *R/MAP.discrete.R
+da41486d99cdde31c3afd43872e94e82 *R/EstDiscrete.R
+6130130756efcf1929c4f850ba885544 *R/MAP.continuous.R
+49290f6379186fd82ff476d9afb1f411 *R/MAP.discrete.R
 bd594b6a3b9c9cbf0d6fb3cae309d58b *R/SimGenCluster.R
 30b99ebb2dca97e3145d57d3e09aeb67 *R/SimMultinomial.R
 6853de4ccbffa68cab3d4c8479beeb71 *R/coplik.R
@@ -12,9 +12,9 @@ db2bdbfd25929453f08c6bd770ff1486 *R/expcond.R
 98af8af891cd70730a77393cd1bc8f5d *R/expcondinv.R
 a240e35abb6a1d396e2c8ab1c555ea84 *R/invfunc.R
 ba19cd9a417c165aac33284119bbf4d3 *R/linkCop.R
-18877dcfba1ee35772eb6822643159ec *R/margins.R
+abed94bdec2992054b6ba73c210187d8 *R/margins.R
 f43fc2b35fd6f5bfb6f38e96aab7fbd9 *R/pcond.R
-4cd5b939884372c864015c0d035e9e6b *R/predictContinuous.R
+ece3bad2ba90fd4a65af93d7ab895eaf *R/predictContinuous.R
 26d5b3b367fe526f94b2124590a02c0e *R/predictDiscrete.R
 1d73ec88256bd9997171459a529c4692 *R/pseudosC.R
 019854295377b3afb5172f95a544a7c8 *R/qcond.R
@@ -25,8 +25,8 @@ f43fc2b35fd6f5bfb6f38e96aab7fbd9 *R/pcond.R
 6bde441ec2714b81eba16d4863274e21 *data/poisson.rda
 f107534d4c742b571b66885d6f81c94a *man/EstContinuous.Rd
 9aae57cf9b33cfaf96cb0ff67d1fe57e *man/EstDiscrete.Rd
-1fec08ceaadb443b49758057a9f84916 *man/MAP.continuous.Rd
-8ffa60275bdf21ad934cd2e20a3aaad4 *man/MAP.discrete.Rd
+12409c1dd687eb798f27f4bdecf9ca4b *man/MAP.continuous.Rd
+dec3c30bde44ef77ea8ca087dd858cb1 *man/MAP.discrete.Rd
 367582d01ce13d2492dd40fbec200033 *man/SimGenCluster.Rd
 ea543bf9ad3d685920bdc5c039b71511 *man/SimMultinomial.Rd
 6c5a5106b9e274e5bb4fec8a70b75e00 *man/berncpdf.Rd
@@ -85,7 +85,7 @@ d992051ec6904fe3753a6af4ef40d911 *man/pcondpla.Rd
 5d856bde2b290048b38ef6929c7fed59 *man/pcondt.Rd
 f5a858198a526dcda2752cdcda3d6a1d *man/poiscpdf.Rd
 efcbaaa8403761f2aa80ca4eafb0da33 *man/poisson.Rd
-83d52bd867cc08971c180584a7b49508 *man/predictContinuous.Rd
+d9853479fd2db07d67c18660262e2a00 *man/predictContinuous.Rd
 e7ae4a8bc54675d30648c80ac0ba3a64 *man/predictDiscrete.Rd
 d44e335c34c28fed9d1f0ebf009b0e31 *man/pseudosC.Rd
 bb8cb3f17bd12a19efdfbb95a5ad7830 *man/qcond.Rd

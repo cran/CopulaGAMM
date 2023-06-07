@@ -355,11 +355,13 @@ wprod<-function(M,x)
 #' @export
 #'
 expcpdf=function(z,th){
-  ex=exp(-z*th)
+  if(is.vector(th)){ th = matrix(th,ncol=1)}
+  th1=th[,1]
+  ex=exp(-z*th1)
   cdf=1-ex
-  pdf=th*ex
+  pdf=th1*ex
   cdf1=z*ex
-  pdf1=(1-z*th)*ex
+  pdf1=(1-z*th1)*ex
   cbind(cdf,pdf,cdf1,0,pdf1,0)
 }
 

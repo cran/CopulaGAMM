@@ -15,7 +15,7 @@ MAP.continuous(u, family, rot, thC0k, dfC = NULL, nq = 35)
 
 \item{thC0k}{vector of copula parameters}
 
-\item{dfC}{degrees of freedome for the Student copula (default is NULL)}
+\item{dfC}{degrees of freedom for the Student copula (default is NULL)}
 
 \item{nq}{number of nodes and weighted for Gaussian quadrature of the product of conditional copulas; default is 31.}
 }

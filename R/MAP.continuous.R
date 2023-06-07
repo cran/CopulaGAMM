@@ -6,7 +6,7 @@
 #' @param family  copula family: "gaussian" , "t" , "clayton" ,  "joe", "frank" , "fgm", gumbel", "plackett", "galambos", "huesler-reiss"
 #' @param rot     rotation: 0 (default), 90, 180 (survival), or 270.
 #' @param thC0k   vector of copula parameters
-#' @param dfC     degrees of freedome for the Student copula (default is NULL)
+#' @param dfC     degrees of freedom for the Student copula (default is NULL)
 #' @param nq      number of nodes and weighted for Gaussian quadrature of the product of conditional copulas; default is 31.
 #' @return \item{condmed}{Conditional a posteriori median.}
 #'

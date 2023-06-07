@@ -302,7 +302,7 @@ EstDiscrete=  function(y,disc,family, rot = 0, clu,
 
 
 
-      V[k] = MAP.discrete(vv,uu,family,rot,thC0k,dfC,nq)
+      V[k] = MAP.discrete(vv,uu,family,rot,thC0k,dfC,adj,nq)
 
     }
   }
