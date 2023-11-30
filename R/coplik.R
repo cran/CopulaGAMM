@@ -208,6 +208,9 @@ fjoeders=function(u,v,cpar,du = FALSE){
     pdfu = (-2+1/cpar)*tem2/ctem2+(1-cpar)/(1-u)+tem2/(cpar-1+ctem2)
     pdfu = pdf*pdfu
   }
+  if(du==F){
+    pdfu = ccond*(1-cpar)*(1-(1-ud)*vd/ctem2)/(1-v)
+  }
   out = cbind(ccond,pdf,ccond1,pdf1,pdfu)
   out[u==0,3] = 0
   out[v==1,] = 0
@@ -249,6 +252,8 @@ fmtcjders=function(u,v,cpar,du = FALSE){
 
     pdfu=0;
     if(du==TRUE) pdfu = pdf*(-cpar-1+(2*cpar+1)*ud/(ud+vd-1))/u
+    if(du==FALSE) pdfu = (cpar+1)*ccond*(-1/v + vd1/uvd)
+    
 
     out = cbind(ccond,ccond1,pdf,pdf1,pdfu)
     out[u==0,1:5] = 0
@@ -303,7 +308,12 @@ fgumders=function(u,v,cpar,du = FALSE){
     cf3=-(cpar-1)/uul;
     pdfu=pdf*(l1u+cf1+cf2+cf3-1/u);
   }
-
+  if(du==FALSE){
+    cf1 = (cpar-1)*vt/uvt/vl/v
+    cf2 = -1/v-(cpar-1)/v/vl
+    pdfu = ccond*(l1v+cf1+cf2)
+  }
+  
   tem1=(ut*ull+vt*vll)/uvt;
   tem2=-luvt/cpar/cpar;
   uvd1=uvd*(tem2+tem1/cpar);
@@ -311,7 +321,7 @@ fgumders=function(u,v,cpar,du = FALSE){
   ccond1=ccond*(-uvd1+vll+tem12);
   pdf1=-pdf*uvd1+l1cdf*(ull+vll+2*tem12)+l2cdf*(1/(cpar-1)+ull+vll+tem12-tem1);
   out=cbind(ccond, ccond1, pdf, pdf1, pdfu)
-  out[u==0,] = 0
+  out[u==0,1:5] = 0
   out[u==1,2:5] = 0
   out[u==1,1] = 1
   out[v==0,2:5] = 0
@@ -350,7 +360,8 @@ ffrkders=function(u,v,cpar,du = FALSE){
   pdfu[ind0]=0
   ccond1[ind0]= u[ind0] *(1-u[ind0])*(1-v[ind0])
   pdf1[ind0] = u[ind0]*v[ind0] + (1-u[ind0])*(1-v[ind0])
-  }else{
+  }
+  if(sum(!ind0) > 0){
 
     u = u[ind1]
     v = v[ind1]
@@ -373,6 +384,8 @@ ffrkders=function(u,v,cpar,du = FALSE){
 
     pdfu[ind1] = 0;
     if(du==TRUE) pdfu[ind1] = cpar*pdf[ind1]*(2*ue*(1-ve)/den-1)
+    if(du==FALSE) pdfu[ind1] = -cpar*ccond[ind1]*(1-ccond[ind1])
+    
 
   }
   cbind(ccond, ccond1, pdf, pdf1, pdfu)
@@ -399,7 +412,8 @@ ffgmders=function(u,v,cpar,du = FALSE){
 
   pdfu=0;
   if(du==TRUE) pdfu = -2*cpar*(1-2*v)
-
+  if(du==FALSE) pdfu = -2*cpar*u*(1-u)
+  
   cbind(ccond, ccond1, pdf, pdf1, pdfu)
 }
 
@@ -437,12 +451,15 @@ fnorders=function(u,v,cpar,du = FALSE){
 
 
   pdfu= 0;
-  if(du){ pdfu = pdf*Cpi*rho*(qv-rho*qu)*exp(.5*qu2)/(1-rho2)}
+  if(du==TRUE){ pdfu = pdf*Cpi*rho*(qv-rho*qu)*exp(.5*qu2)/(1-rho2)}
+  if(du==FALSE){ pdfu = -Cpi*rho*euv*exp(.5*qv2)/srho2}
 
 
   out=cbind(ccond, ccond1, pdf, pdf1, pdfu)
   out[u==0,2:5] = 0
-  out[u==1,2:5] = 1
+  out[u==1,2:5] = 0
+  out[v==0,2:5] = 0
+  out[v==1,2:5] = 0
   out
 }
 

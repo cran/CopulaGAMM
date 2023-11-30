@@ -4,7 +4,7 @@
 \alias{MAP.discrete}
 \title{Estimation of latent variable in the dicrete case}
 \usage{
-MAP.discrete(vv, uu, family, rot, thC0k, dfC = NULL, adj = 1, nq = 35)
+MAP.discrete(vv, uu, family, rot, thC0k, dfC = NULL, nq = 35)
 }
 \arguments{
 \item{vv}{vector of values in (0,1)}
@@ -18,8 +18,6 @@ MAP.discrete(vv, uu, family, rot, thC0k, dfC = NULL, adj = 1, nq = 35)
 \item{thC0k}{vector of copula parameters}
 
 \item{dfC}{degrees of freedom for the Student copula (default is NULL)}
-
-\item{adj}{tuning parameter (>= 1) that can be used to prevent overflow when the cluster size n is very large; when  n<=100 OR Bernoulli marginals, no adjustment is required; when n>=500 for the Poisson likelihood fails due to overflow problem;  adj=3 prevents this in 100\% cases}
 
 \item{nq}{number of nodes and weighted for Gaussian quadrature of the product of conditional copulas; default is 31.}
 }

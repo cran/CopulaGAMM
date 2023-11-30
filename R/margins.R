@@ -234,8 +234,8 @@ geomcpdf=function(z,th){
 
 #' @title Multinomial with p = 1/(1+exp(-th)) cdf/pdf and ders
 #' @description This function computes the cdf, pdf, and associated derivatives
-#' @param z vector of responses taking values in {1,...,nL}: as.number(z) if z is a factor!
-#' @param th th is a n x (L-1) matrix of parameters, i.e., mpar = a=[a_{1,1},...a_{1,k2},a_{2,1},...a_{2,k2},... a_{L-1,1}... a_{L-1,k2}], and first level is the baseline.
+#' @param z vector of responses taking values in 1,...,nL: as.number(z) if z is a factor!
+#' @param th th is a n x (L-1) matrix of parameters, i.e., mpar = a=[a_1,1,...a_1,k2,a_2,1,...a_2,k2,... a_L-1,1... a_L-1,k2], and first level is the baseline.
 #' @param x matrix of covariates (including the constant)
 #' @author Pavel Krupskii and Bruno N. Remillard, January 20, 2022
 #' @return \item{out}{Matrix of conditional cdf, derivative with respect to parameter, pdf, }

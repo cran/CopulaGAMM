@@ -9,7 +9,8 @@
 #' @import statmod, matrixStats
 #' @examples
 #' data(out.poisson)
-#' pred= predictDiscrete(out.poisson,list(clu=c(1:50),xm=rep(0.4,50)),)
+#' newdata = list(clu=c(1:50),xc=rep(0.2,50),xm=rep(0.5,50))
+#' pred= predictDiscrete(out.poisson,newdata,m=100)
 #' @export
 
 predictDiscrete=function(object,newdata,m=100)
@@ -20,7 +21,7 @@ predictDiscrete=function(object,newdata,m=100)
   V       = object$V
   par     = object$coefficients
   cluster = object$cluster
-  disc    = object$disc
+  disc  = object$disc
   rot     = object$rot
 
   clu  = newdata$clu
@@ -45,7 +46,19 @@ predictDiscrete=function(object,newdata,m=100)
 
   if(length(clu)!=nx){warning("cluster sizes do not match the total number of variables"); return(NULL) }
 
-
+  # if(model=="bernoulli"){model=="binomial"}
+  # switch(model,
+  #        "binomial" = { disc= 1  },
+  #
+  #        "poisson" = {  disc = 2 },
+  #
+  #        "nbinom" = {   disc = 3 },
+  #
+  #        "geometric" = { disc = 4  },
+  #
+  #        "multinomial" = { disc = 5  }
+  #
+  # )
 
 
   thC = par$copula

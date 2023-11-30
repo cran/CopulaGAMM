@@ -6,7 +6,7 @@
 \usage{
 EstDiscrete(
   y,
-  disc,
+  model,
   family,
   rot = 0,
   clu,
@@ -18,14 +18,13 @@ EstDiscrete(
   nq = 25,
   dfC = NULL,
   offset = NULL,
-  adj = 1,
   prediction = TRUE
 )
 }
 \arguments{
 \item{y}{n x 1 vector of response variable (assumed continuous).}
 
-\item{disc}{function for margins: 1 (Bernoulli), 2 (Poisson), 3 (Negative Binomial), 4 (Geometric).}
+\item{model}{margins: "binomial" or "bernoulli","poisson", "nbinom" (Negative Binomial), "geometric", "multinomial".}
 
 \item{family}{copula family: "gaussian" , "t" , "clayton" ,  "frank" , "fgm", gumbel".}
 
@@ -48,8 +47,6 @@ EstDiscrete(
 \item{dfC}{degrees of freedom for a Student margin; default is 0.}
 
 \item{offset}{offset (default is NULL)}
-
-\item{adj}{tuning parameter (>= 1) that can be used to prevent overflow when the cluster size n is very large; when  n<=100 OR Bernoulli marginals, no adjustment is required; when n>=500 for the Poisson likelihood fails due to overflow problem;  adj=3 prevents this in 100\% cases}
 
 \item{prediction}{logical variable for prediction of latent variables V (default is TRUE).}
 }
@@ -90,20 +87,24 @@ EstDiscrete(
 
 \item{thF}{Estimated parameters of the margins by observation}
 
-\item{disc}{Discrete margin number}
-
 \item{rot}{rotation}
 
 \item{dfC}{Degrees of freedom for the Student copula}
+
+\item{model}{Name of the margins}
+
+\item{disc}{Discrete margin number}
 }
 \description{
 This function computes the estimation of a copula-based  2-level hierarchical model.
 }
 \examples{
-data(poisson) #simulated data with poisson margins
-start=c(0,0,0); LB=rep(-10,3);UB=rep(10,3)
-y=poisson$y; clu=poisson$clu;xm=poisson$xm
-EstDiscrete(y,disc=2,family="clayton",rot=90,clu=clu,xm=xm,start=start,LB=LB,UB=UB)
+data(sim.poisson) #simulated data with Poisson margins
+start=c(2,8,3,-1); LB =    c(-3,  3,  -7,  -6);UB=c( 7, 13,   13,   4)
+y=sim.poisson$y; clu=sim.poisson$clu;
+xc=sim.poisson$xc; xm=sim.poisson$xm
+model = "poisson"; family="frank"
+out.poisson=EstDiscrete(y,model,family,rot=0,clu,xc,xm,start,LB,UB,nq=31,prediction=TRUE)
 }
 \references{
 Krupskii, Nasri & Remillard (2023). On factor copula-based mixed regression models

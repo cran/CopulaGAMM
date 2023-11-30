@@ -115,7 +115,8 @@ qcond = function(w,v,family,cpar,rot=0)
 #' @return \item{out}{Conditional quantile}
 #'
 qcondgum = function(w,v,th){
-func1=function(q,th){ return(pcond(q,v,"gumbel",cpar=th)) }
+#func1=function(q,th) return(pcond(q,v,"gumbel",cpar=th)) 
+func1=function(q,iconv) return(pcond(q,v[!iconv],"gumbel",cpar=th[!iconv])) 
 out=invfunc(w,func1,th,tol=1e-8)
 out
 }
@@ -130,7 +131,8 @@ out
 #for generating data from t copula
 #th[1] - correlation; th[2] - df
 qcondt = function(w,v,th){
-rho = th[1]; nu = th[2];
+if(is.vector(th)) th = matrix(th,nrow=1)
+rho = th[,1]; nu = th[,2];
 t2 = qt(v,nu);
 tq = qt(w,nu+1);
 snu = sqrt(nu+1);
@@ -162,7 +164,8 @@ out
 #'
 
 qcondjoe = function(w,v,th){
-  func1=function(q,v){ return(pcondjoe(q,v,th)) }
+  #func1=function(q,v){ return(pcondjoe(q,v,th)) }
+  func1=function(q,iconv){ return(pcondjoe(q,v[!iconv],th[!iconv])) }
   out=invfunc(w,func1,v,tol=1e-8)
   out
 }
@@ -175,11 +178,15 @@ qcondjoe = function(w,v,th){
 #'
 qcondcla = function(w,v,th){
   a = -th/(1+th)
-  if(th==0){out = w}
-  else{
-   out = (1+ v^(-th) *(w^a-1))^(-1/th)
-   out[th>11]=v[th>11]
-  }
+  #if(th==0){out = w}
+  #else{
+  out = (1+ v^(-th) *(w^a-1))^(-1/th)
+  th0 = (th==0)
+  th1 = (th>11)
+  out[th0] = w[th0]
+  out[th1] = v[th1]
+  #out[th>11]=v[th>11]
+  #}
   out
 }
 
@@ -216,9 +223,11 @@ qcondfra = function(w,v,th){
   x2 = exp(-th*v)
 
   a = exp(-th)
-  if(th==0){out = w}
-  else{
-  out <- -log(  (x2+w*(a-x2))/(x2+w*(1-x2)) )/th}
+  #if(th==0){out = w}
+  #else{
+  out = -log(  (x2+w*(a-x2))/(x2+w*(1-x2)) )/th
+  th0 = (th==0)
+  out[th0] = w[th0]#}
   out
 }
 
@@ -232,7 +241,8 @@ qcondfra = function(w,v,th){
 #' @return \item{out}{Conditional quantile}
 #'
 qcondgal = function(w,v,th){
-  func1=function(q,v){ return(pcondgal(q,v,th)) }
+  #func1=function(q,v){ return(pcondgal(q,v,th)) }
+  func1=function(q,iconv){ return(pcondgal(q,v[!iconv],th[!iconv])) }
   out=invfunc(w,func1,v,tol=1e-8)
   out
 }
@@ -261,7 +271,8 @@ qcondfgm=function(w,v,th)
 #' @return \item{out}{Conditional quantile}
 #'
 qcondhr = function(w,v,th){
-  func1=function(q,v){ return(pcondhr(q,v,th)) }
+  #func1=function(q,v){ return(pcondhr(q,v,th)) }
+  func1=function(q,iconv){ return(pcondhr(q,v[!iconv],th[!iconv])) }
   out=invfunc(w,func1,v,tol=1e-8)
   out
 }

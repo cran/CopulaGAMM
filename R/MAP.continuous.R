@@ -32,14 +32,24 @@ MAP.continuous = function(u,family,rot,thC0k,dfC=NULL,nq=35){
   tem=dcop(uu,nn,family,rot,param)
 
   pdf=matrix(tem,ncol=nq)
-  den=matrixStats::colProds(pdf)
-  normC=sum(wl*den)
+  ##den=matrixStats::colProds(pdf)
+  lden=colSums(log(pdf))
+  lmax = max(lden)
+  wprd = wl*exp(lden - lmax)  
+  normC = sum(wprd)
+  
+  #normC=sum(wl*den)
   cdff=function(x,thx){
     nnx=x*nn
     temx=dcop(uu,nnx,family,rot,param)
     pdfx=matrix(temx,ncol=nq)
-    denx=matrixStats::colProds(pdfx)
-    cdfx=x*sum(wl*denx)/normC
+    
+    lpdfx=colSums(log(pdfx))
+    wprd = wl*exp(lpdfx - lmax)  
+    cdfx = x*sum(wprd)/normC
+    
+    #denx=matrixStats::colProds(pdfx)
+    #cdfx=x*sum(wl*denx)/normC
     cdfx
   }
   condmed=invfunc(0.5,cdff,0,lb=1e-10,ub=1-1e-10,tol=1e-8)

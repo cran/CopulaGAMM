@@ -25,7 +25,7 @@
 #' N=n*K
 #' set.seed(1)
 #' clu=rep(c(1:K),each=n)
-#' parC = 2
+#' parC = 0 # yields tau = 0.5 for Clayton
 #' parM= c(1,-1,4)
 #' xm = runif(N)
 #' y=SimGenCluster(parC,parM,xm,family="clayton",rot=90,clu=clu,model="gaussian")
@@ -57,11 +57,11 @@ SimGenCluster<-function(parC, parM, clu, xc=NULL, xm=NULL,
   k2 = ncol(Matxm)
 
 
-  thC = colSums(parC*t(Matxc))
+  thC = matrixStats::colSums2(parC*t(Matxc))
   cpar = linkCop(thC,family)$cpar
   size=NULL
 
-  thF = colSums(parM[1:k2]*t(Matxm))+offset1
+  thF = matrixStats::colSums2(parM[1:k2]*t(Matxm))+offset1
 
   if(length(parM)>k2)
     {
@@ -81,9 +81,16 @@ SimGenCluster<-function(parC, parM, clu, xc=NULL, xm=NULL,
   w = runif(N)
   U = rep(0,N)
   y = rep(0,N)
-  for(i in 1:N){
-    U[i]=qcond(w[i],V[i],family=family,cpar[i],rot)
-    }
+
+  if(family=="t") cpari = cbind(cpar,dfC)
+
+  U=qcond(w,V,family=family,cpar,rot)
+
+  #for(i in 1:N){
+  #  cpari = cpar[i]
+  #  if(family=="t") cpari = c(cpari,dfC)
+  #  U[i]=qcond(w[i],V[i],family=family,cpari,rot)
+  #  }
 
 
   switch(model,

@@ -55,7 +55,7 @@ n=5  #size of each cluster
 N=n*K
 set.seed(1)
 clu=rep(c(1:K),each=n)
-parC = 2
+parC = 0 # yields tau = 0.5 for Clayton
 parM= c(1,-1,4)
 xm = runif(N)
 y=SimGenCluster(parC,parM,xm,family="clayton",rot=90,clu=clu,model="gaussian")

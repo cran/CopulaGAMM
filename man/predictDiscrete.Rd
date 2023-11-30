@@ -21,7 +21,8 @@ Compute the conditional expectation of a copula-based  2-level hierarchical mode
 }
 \examples{
 data(out.poisson)
-pred= predictDiscrete(out.poisson,list(clu=c(1:50),xm=rep(0.4,50)),)
+newdata = list(clu=c(1:50),xc=rep(0.2,50),xm=rep(0.5,50))
+pred= predictDiscrete(out.poisson,newdata,m=100)
 }
 \references{
 Krupskii, Nasri & Remillard (2023). On factor copula-based mixed regression models

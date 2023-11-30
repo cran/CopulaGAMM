@@ -74,7 +74,7 @@ EstContinuous =function(y,model,family,rot=0,clu,xc=NULL,xm=NULL,start, LB, UB, 
     gl=statmod::gauss.quad.prob(nq)
     nl=gl$nodes
     wl=gl$weights
-    if(min(par - LB) < 0 || max(par - UB) > 0) return(1e5)
+    if(min(par - LB) < 0 || max(par - UB) > 0) return(1e100)
 
     thC = colSums(par[1:k1]*t(Matxc))  #phi(beta,x_ki)
     thF = cbind(colSums(par[k1+(1:k2)]*t(Matxm)), par[k1+k2+1]) #h(alpha,x_ki)
@@ -121,12 +121,21 @@ EstContinuous =function(y,model,family,rot=0,clu,xc=NULL,xm=NULL,start, LB, UB, 
       tem4 = tem[,4] #\dot c_ki
       tem5 = tem[,5] #\partial_u \dot c_ki
       tem3[tem3<1e-100] = 1e-100
-      wprd = wl*matrixStats::colProds(matrix(tem3,ncol=nq))
-      intf = sum(wprd)  +1e-100#c_k
-      sl = sum(log(mpdfk))+log(intf) #log(f_k)
 
-      fk[k] = exp(sl) #f_k
-      out  = out - sl
+      mtem3 = matrix(tem3,ncol=nq)
+      ltem3 = colSums(log(mtem3))
+      lmax3 = max(ltem3)
+      wprd = wl*exp(ltem3 - lmax3)  
+      intf = sum(wprd) 
+      
+      ###wprd = wl*matrixStats::colProds(matrix(tem3,ncol=nq))
+      ###intf = sum(wprd)  +1e-100#c_k
+
+      sl = sum(log(mpdfk))+log(intf) #log(f_k)
+      out = out - sl - lmax3
+
+      ###fk[k] = exp(sl) #f_k 
+      ###out  = out - sl
       M=matrix(tem4/tem3,nrow=nq,byrow=TRUE)  #\dot c_ki/c_ki
       M1 = matrix(tem5/tem3,nrow=nq,byrow=TRUE)
       grd[k,1:k1] =   - colSums(thCd*colSums(wprd*M))/intf
@@ -140,7 +149,7 @@ EstContinuous =function(y,model,family,rot=0,clu,xc=NULL,xm=NULL,start, LB, UB, 
     attr(out, "grd") = grd
     out
   }
-  mle = nlm(likf,p=start,check.analyticals=F,print.level=0,iterlim=200)
+  mle = nlm(likf,p=start,check.analyticals=F,print.level=2,iterlim=200)
 
   V=NULL
 

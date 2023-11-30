@@ -4,7 +4,7 @@
 \alias{invfunc}
 \title{Inverse function}
 \usage{
-invfunc(q, func, th, lb = 1e-12, ub = 1 - 1e-12, tol = 1e-08)
+invfunc(q, func, th, lb = 1e-12, ub = 1 - 1e-12, tol = 1e-08, nbreak = 40)
 }
 \arguments{
 \item{q}{Function value (can be a vector if func() supports a vector argument)}
@@ -18,6 +18,8 @@ invfunc(q, func, th, lb = 1e-12, ub = 1 - 1e-12, tol = 1e-08)
 \item{ub}{Upper bound for the possible values}
 
 \item{tol}{Tolerance for the inversion}
+
+\item{nbreak}{Maximum number of iterations (default is 40)}
 }
 \value{
 \item{out}{Inverse values}

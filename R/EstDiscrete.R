@@ -3,7 +3,7 @@
 #' @description This function computes the estimation of a copula-based  2-level hierarchical model.
 #'
 #' @param y       n x 1 vector of response variable (assumed continuous).
-#' @param disc    function for margins: 1 (Bernoulli), 2 (Poisson), 3 (Negative Binomial), 4 (Geometric).
+#' @param model   margins: "binomial" or "bernoulli","poisson", "nbinom" (Negative Binomial), "geometric", "multinomial".
 #' @param family  copula family: "gaussian" , "t" , "clayton" ,  "frank" , "fgm", gumbel".
 #' @param rot     rotation: 0 (default), 90, 180 (survival), or 270
 #' @param clu     variable of size n defining the clusters; can be a factor
@@ -15,7 +15,6 @@
 #' @param nq      number of nodes and weighted for Gaussian quadrature of the product of conditional copulas; default is 25.
 #' @param dfC     degrees of freedom for a Student margin; default is 0.
 #' @param offset  offset (default is NULL)
-#' @param adj     tuning parameter (>= 1) that can be used to prevent overflow when the cluster size n is very large; when  n<=100 OR Bernoulli marginals, no adjustment is required; when n>=500 for the Poisson likelihood fails due to overflow problem;  adj=3 prevents this in 100\% cases
 #' @param prediction  logical variable for prediction of latent variables V (default is TRUE).
 #'
 #' @return \item{coefficients}{Estimated parameters}
@@ -36,25 +35,44 @@
 #' @return \item{family}{Copula family}
 #' @return \item{thC0}{Estimated parameters of the copula by observation}
 #' @return \item{thF}{Estimated parameters of the margins by observation}
-#' @return \item{disc}{Discrete margin number}
 #' @return \item{rot}{rotation}
 #' @return \item{dfC}{Degrees of freedom for the Student copula}
+#' @return \item{model}{Name of the margins}
+#' @return \item{disc}{Discrete margin number}
 #'
 #' @references Krupskii, Nasri & Remillard (2023). On factor copula-based mixed regression models
 #' @author Pavel Krupskii, Bouchra R. Nasri and Bruno N. Remillard
 #' @import  statmod, matrixStats
 #' @examples
-#' data(poisson) #simulated data with poisson margins
-#' start=c(0,0,0); LB=rep(-10,3);UB=rep(10,3)
-#' y=poisson$y; clu=poisson$clu;xm=poisson$xm
-#' EstDiscrete(y,disc=2,family="clayton",rot=90,clu=clu,xm=xm,start=start,LB=LB,UB=UB)
+#' data(sim.poisson) #simulated data with Poisson margins
+#' start=c(2,8,3,-1); LB =    c(-3,  3,  -7,  -6);UB=c( 7, 13,   13,   4)
+#' y=sim.poisson$y; clu=sim.poisson$clu;
+#' xc=sim.poisson$xc; xm=sim.poisson$xm
+#' model = "poisson"; family="frank"
+#' out.poisson=EstDiscrete(y,model,family,rot=0,clu,xc,xm,start,LB,UB,nq=31,prediction=TRUE)
 #' @export
 
 
-EstDiscrete=  function(y,disc,family, rot = 0, clu,
+EstDiscrete=  function(y,model,family, rot = 0, clu,
                           xc=NULL,xm=NULL,start, LB, UB, nq=25,
-                          dfC=NULL,offset=NULL, adj=1, prediction=TRUE)
+                          dfC=NULL,offset=NULL, prediction=TRUE)
 {
+  
+  if(model=="bernoulli"){model=="binomial"}
+  switch(model,
+         "binomial" = { disc= 1  },
+         
+         "poisson" = {  disc = 2 },
+         
+         "nbinom" = {   disc = 3 },
+         
+         "geometric" = { disc = 4  },
+         
+         "multinomial" = { disc = 5  }
+         
+  )
+  
+  
   d = length(y)
   L=2
   z=y
@@ -98,7 +116,7 @@ EstDiscrete=  function(y,disc,family, rot = 0, clu,
     gl=statmod::gauss.quad.prob(nq)
     nl=gl$nodes
     wl=gl$weights
-    if(min(par - LB) < 0 || max(par - UB) > 0) return(1e5)
+    if(min(par - LB) < 0 || max(par - UB) > 0) return(1e100)
     thC =colSums(par[1:k1]*t(Matxc))
     for(j in 1:(L-1))
     {
@@ -198,20 +216,29 @@ EstDiscrete=  function(y,disc,family, rot = 0, clu,
         tem2 = tem0[,2] - tem[,2]
         tem3u = tem[,3];
         tem3v = tem0[,3]
-        tem1[tem1 < 1e-100] = 1e-5
+        tem1[tem1 < 1e-20] = 1e-20
       }
-      wprd = wl*matrixStats::colProds(matrix(adj*tem1,ncol=nq))
+      
+      
+      mat1 = matrix(tem1,ncol=nq)
+      lmat = colSums(log(mat1))
+      lmax = max(lmat)
+      wprd = wl*exp(lmat - lmax)
+
       intf = sum(wprd)
       sl = log(intf) #log(f_k)
 
       fk[k] = intf #f_k
 
-      out  = out - sl + n_k*log(adj)
+      ##out  = out - sl + n_k*log(adj)
+      out  = out - sl - lmax
+      #adj = exp(-lmax/n_k)
+
       M=matrix(tem2/tem1,nrow=nq,byrow=TRUE)
 
       grd[k,1:k1] =   - sum(thCd*colSums(wprd*M))/intf
 
-
+      
       if(disc==1) grd[k,k1+(1:k2)] =  - colSums( wprd*matrix(tem3/tem1,nrow=nq,byrow=TRUE)%*%uu1 )/intf;
       if(disc>=2){
         Mv = matrix(tem3v/tem1,nrow=nq,byrow=TRUE)
@@ -224,9 +251,10 @@ EstDiscrete=  function(y,disc,family, rot = 0, clu,
     grdsum = colSums(grd)
     attr(out, "gradient") = grdsum
     attr(out, "grd") = grd
+    ##attr(out, "adj") = adj
     out
   }
-  mle = nlm(likf,p=start,check.analyticals=F,print.level=2,iterlim=400)
+  mle = nlm(likf,p=start,check.analyticals=FALSE,print.level=0,iterlim=400)
 
   V=NULL
   thC0=NULL
@@ -252,6 +280,7 @@ EstDiscrete=  function(y,disc,family, rot = 0, clu,
 
   out0=likf(par)
   grd=attributes(out0)$grd
+  adj=attributes(out0)$adj
 
 
   switch(disc,
@@ -302,7 +331,7 @@ EstDiscrete=  function(y,disc,family, rot = 0, clu,
 
 
 
-      V[k] = MAP.discrete(vv,uu,family,rot,thC0k,dfC,adj,nq)
+      V[k] = MAP.discrete(vv,uu,family,rot,thC0k,dfC,nq)
 
     }
   }
@@ -315,7 +344,7 @@ EstDiscrete=  function(y,disc,family, rot = 0, clu,
   out=list(coefficients=coef, sd = st.dev, tstat=tstat, pval=pval,
            gradient=mle$gradient,loglik=-LL, aic=AIC,bic=BIC,cov=covar,
            grd=grd,clu=clu,Matxc=Matxc,Matxm=Matxm, cluster=cluster, V=V,
-           family=family,thC0=thC0,thF=thF, dfC=dfC, rot=rot,disc=disc)
+           family=family,thC0=thC0,thF=thF, dfC=dfC, rot=rot,model=model,disc=disc)
 
  # class(out) <- "EstDiscrete"
   out

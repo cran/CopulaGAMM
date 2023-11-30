@@ -7,9 +7,9 @@
 multinomcpdf(z, th, x)
 }
 \arguments{
-\item{z}{vector of responses taking values in {1,...,nL}: as.number(z) if z is a factor!}
+\item{z}{vector of responses taking values in 1,...,nL: as.number(z) if z is a factor!}
 
-\item{th}{th is a n x (L-1) matrix of parameters, i.e., mpar = a=[a_{1,1},...a_{1,k2},a_{2,1},...a_{2,k2},... a_{L-1,1}... a_{L-1,k2}], and first level is the baseline.}
+\item{th}{th is a n x (L-1) matrix of parameters, i.e., mpar = a=[a_1,1,...a_1,k2,a_2,1,...a_2,k2,... a_L-1,1... a_L-1,k2], and first level is the baseline.}
 
 \item{x}{matrix of covariates (including the constant)}
 }
