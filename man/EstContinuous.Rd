@@ -12,21 +12,21 @@ EstContinuous(
   clu,
   xc = NULL,
   xm = NULL,
-  start,
-  LB,
-  UB,
+  start = NULL,
+  LB = NULL,
+  UB = NULL,
   nq = 31,
-  dfM = NULL,
   dfC = NULL,
+  dfM = NULL,
   prediction = TRUE
 )
 }
 \arguments{
 \item{y}{n x 1 vector of response variable (assumed continuous).}
 
-\item{model}{function for margins: "gaussian" (normal), "t" (Student with known df=dfM), laplace" , "exponential", "weibull".}
+\item{model}{function for margins: "gaussian" (normal), "t" (Student with known df=dfM), "laplace" , "exponential", "weibull".}
 
-\item{family}{copula family: "gaussian" , "t" , "clayton" ,  "frank" , "fgm", "gumbel".}
+\item{family}{copula family: "gaussian" (normal), "t" , "clayton" ,  "frank" , "fgm", "gumbel".}
 
 \item{rot}{rotation: 0 (default), 90, 180 (survival), or 270}
 
@@ -36,7 +36,7 @@ EstContinuous(
 
 \item{xm}{covariates of size n for the estimation of the mean of the margin, in addition to the constant; default is NULL.}
 
-\item{start}{starting point for the estimation; could be the ones associated with a Gaussian-copula model defined by lmer.}
+\item{start}{starting point for the estimation; default (NULL) are the ones associated with a Gaussian-copula model defined by lme.}
 
 \item{LB}{lower bound for the parameters.}
 
@@ -44,14 +44,14 @@ EstContinuous(
 
 \item{nq}{number of nodes and weighted for Gaussian quadrature of the product of conditional copulas; default is 25.}
 
-\item{dfM}{degrees of freedom for a Student margin; default is 0 for non-t distribution,}
-
 \item{dfC}{degrees of freedom for a Student margin; default is 5.}
+
+\item{dfM}{degrees of freedom for a Student margin; default is NULL for non-t distribution.}
 
 \item{prediction}{logical variable for prediction of latent variables V; default is TRUE.}
 }
 \value{
-\item{coefficients}{Estimated parameters}
+\item{coefficients}{List of estimated parameters: copula, margin, size}
 
 \item{sd}{Standard deviations of the estimated parameters}
 

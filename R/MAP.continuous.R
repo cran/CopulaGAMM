@@ -28,26 +28,26 @@ MAP.continuous = function(u,family,rot,thC0k,dfC=NULL,nq=35){
   nn=rep(nl,each=d)
 
   param=rep(thC0k,nq)
-  param=cbind(param,dfC);
-  tem=dcop(uu,nn,family,rot,param)
+  tem=dcop(uu,nn,family,rot,param,dfC)
 
+  tem=pmax(1e-10,tem)
   pdf=matrix(tem,ncol=nq)
   ##den=matrixStats::colProds(pdf)
   lden=colSums(log(pdf))
   lmax = max(lden)
-  wprd = wl*exp(lden - lmax)  
+  wprd = wl*exp(lden - lmax)
   normC = sum(wprd)
-  
+
   #normC=sum(wl*den)
   cdff=function(x,thx){
     nnx=x*nn
-    temx=dcop(uu,nnx,family,rot,param)
+    temx=dcop(uu,nnx,family,rot,param,dfC)
     pdfx=matrix(temx,ncol=nq)
-    
+
     lpdfx=colSums(log(pdfx))
-    wprd = wl*exp(lpdfx - lmax)  
+    wprd = wl*exp(lpdfx - lmax)
     cdfx = x*sum(wprd)/normC
-    
+
     #denx=matrixStats::colProds(pdfx)
     #cdfx=x*sum(wl*denx)/normC
     cdfx

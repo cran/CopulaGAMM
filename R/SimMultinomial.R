@@ -7,11 +7,11 @@
 #' @param clu     vector of clusters (can be a factor)
 #' @param xc      matrix of covariates for the copula, not including the constant (can be NULL)
 #' @param xm      matrix  of covariates for the margins, not including the constant (can be NULL)
-#' @param family  copula family: "gaussian" , "t" , "clayton" ,  "joe", "frank" , "gumbel", "plackett"
+#' @param family  copula family: "gaussian" (normal), "t" , "clayton" ,  "joe", "frank" , "gumbel", "plackett"
 #' @param rot    rotation: 0 (default), 90, 180 (survival), or 270
 #' @param dfC     degrees of freedom for student copula (default is NULL)
 #' @param offset  offset for the margins (default is NULL)
-#' @return \item{y}{Simulated factor}
+#' @return \item{out}{List of simulated factors (y) and cluster factors (V)}
 #'
 #' @author  Bruno N. Remillard
 #'
@@ -24,7 +24,7 @@
 #' parC = 2
 #' parM=matrix(c(1,-1,0.5,2),byrow=TRUE,ncol=2)
 #' xm = runif(N)
-#' y=SimMultinomial(parC,parM,clu,xm=xm,family="clayton",rot=90)
+#' y=SimMultinomial(parC,parM,clu,xm=xm,family="clayton",rot=90)$y
 #' @export
 #'
 SimMultinomial<-function(parC,parM,clu,xc=NULL,xm=NULL,
@@ -83,6 +83,7 @@ SimMultinomial<-function(parC,parM,clu,xc=NULL,xm=NULL,
     y[i]=val[j]
   }
   y=as.factor(y)
-  return(y)
+  out=list(y=y,V=V)
+  out
 }
 

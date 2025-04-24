@@ -27,7 +27,7 @@ SimMultinomial(
 
 \item{xm}{matrix  of covariates for the margins, not including the constant (can be NULL)}
 
-\item{family}{copula family: "gaussian" , "t" , "clayton" ,  "joe", "frank" , "gumbel", "plackett"}
+\item{family}{copula family: "gaussian" (normal), "t" , "clayton" ,  "joe", "frank" , "gumbel", "plackett"}
 
 \item{rot}{rotation: 0 (default), 90, 180 (survival), or 270}
 
@@ -36,7 +36,7 @@ SimMultinomial(
 \item{offset}{offset for the margins (default is NULL)}
 }
 \value{
-\item{y}{Simulated factor}
+\item{out}{List of simulated factors (y) and cluster factors (V)}
 }
 \description{
 Generate a random sample of multinomial observations from a copula-based mixed regression model.
@@ -50,7 +50,7 @@ clu=rep(c(1:K),each=n)
 parC = 2
 parM=matrix(c(1,-1,0.5,2),byrow=TRUE,ncol=2)
 xm = runif(N)
-y=SimMultinomial(parC,parM,clu,xm=xm,family="clayton",rot=90)
+y=SimMultinomial(parC,parM,clu,xm=xm,family="clayton",rot=90)$y
 }
 \author{
 Bruno N. Remillard

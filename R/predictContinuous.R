@@ -109,10 +109,10 @@ predictContinuous=function(object,newdata=NULL,nq=25)
     k2 = ncol(Matxm)
     nx = nrow(Matxm)
 
-    thC  = par[1:k1]
+    thC  = par$copula
 
-    thF = colSums(par[k1+(1:k2)]*t(Matxm))
-    thF = cbind(thF, par[k1+k2+1])
+    thF = colSums(par$margin*t(Matxm))
+    thF = cbind(thF, par$size)
     switch(model,
            "normal"  = {
              ql = qnorm(nl)

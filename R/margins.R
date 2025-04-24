@@ -98,7 +98,8 @@ berncpdf=function(z,th){
   pdf1[ind0] = -p*(1-p)
   cdf1[ind0] = pdf1[ind0]
 
-  cbind(cdf,pdf,cdf1,0,pdf1,0)
+  out=cbind(cdf,pdf,cdf1,0,pdf1,0)
+  return(out)
 }
 
 
@@ -118,7 +119,8 @@ poiscpdf=function(z,th){
   pdf= dpois(z,th)
   cdf1=-pdf
   pdf1= dpois(z-1,th)-dpois(z,th)
-  cbind(cdf,pdf,cdf1,0,pdf1,0)
+  out=cbind(cdf,pdf,cdf1,0,pdf1,0)
+  return(out)
 }
 
 #' @title Negative binomial cdf/pdf and ders
@@ -160,7 +162,7 @@ nbinomcpdf=function(z,th){
 
   out=cbind(cdf,pdf,cdf1,cdf2,pdf1,pdf2)
   out[i0,] = 0
-  out
+  return(out)
 }
 #' @title Negative binomial cdf/pdf and ders
 #' @description This function computes the cdf, pdf, and associated derivatives
@@ -205,7 +207,7 @@ nbinom1cpdf=function(z,th){
 
   out=cbind(cdf,pdf,cdf1,cdf2,pdf1,pdf2)
   out[i0,] = 0
-  out
+  return(out)
 }
 
 #' @title Geometric with p = 1/(1+exp(-th)) cdf/pdf and ders
@@ -229,7 +231,8 @@ geomcpdf=function(z,th){
   cdf1 = -pdf*(1+z)*(1-p)
 
 
-  cbind(cdf,pdf,cdf1,0,pdf1,0)
+  out=cbind(cdf,pdf,cdf1,0,pdf1,0)
+  return(out)
 }
 
 #' @title Multinomial with p = 1/(1+exp(-th)) cdf/pdf and ders
@@ -362,7 +365,8 @@ expcpdf=function(z,th){
   pdf=th1*ex
   cdf1=z*ex
   pdf1=(1-z*th1)*ex
-  cbind(cdf,pdf,cdf1,0,pdf1,0)
+  out=cbind(cdf,pdf,cdf1,0,pdf1,0)
+  return(out)
 }
 
 #' @title Weibul cdf/pdf and ders
@@ -391,7 +395,8 @@ weibcpdf=function(z,th){
   cdf2=za*lx*ex
   pdf1=al*al*za1*(1-za)*ex
   pdf2=za1*(la-al*la*za*lx+al*la*lx)*ex
-  cbind(cdf,pdf,cdf1,cdf2,pdf1,pdf2)
+ out= cbind(cdf,pdf,cdf1,cdf2,pdf1,pdf2)
+ return(out)
 }
 
 #' @title normal cdf/pdf and ders
@@ -414,7 +419,8 @@ normcpdf=function(z,th){
   pdf=exp(-.5*stz2)/sqrt(2*pi)/s
   cdf1=-pdf; cdf2=-stz*pdf
   pdf1=pdf*stz/s; pdf2=-pdf/s+stz2*pdf/s
-  cbind(cdf,pdf,cdf1,cdf2,pdf1,pdf2)
+  out=cbind(cdf,pdf,cdf1,cdf2,pdf1,pdf2)
+  return(out)
 }
 
 #' @title Student  cdf/pdf and ders
@@ -443,7 +449,8 @@ tcpdf=function(z,th,df){
   C0=(1+1/df)/(1+stz2)
   pdf1=C0*pdf*stz/s
   pdf2=-pdf/s+stz*pdf1
-  cbind(cdf,pdf,cdf1,cdf2,pdf1,pdf2)
+  out=cbind(cdf,pdf,cdf1,cdf2,pdf1,pdf2)
+  return(out)
 }
 
 

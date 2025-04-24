@@ -26,13 +26,13 @@ if(length(th)==1) th = rep(th[1],lq)
 v0 = rep(lb,lq);
 v1 = rep(ub,lq);
 out = rep(0, lq);
-iconv = rep(F, lq);
+iconv = rep(FALSE, lq);
 func0 = function(v,q,th) return(func(v,th)-q)
 #f0 = func0(v0,q,th); f1 = func0(v1,q,th);
 f0 = func0(v0,q,iconv); f1 = func0(v1,q,iconv);
 l0 = (f0 > 0 & f1 > 0);
 l1 = (f0 < 0 & f1 < 0);
-iconv[l0 | l1] = T;
+iconv[l0 | l1] = TRUE;
 tol0 = rep(1,lq); tol0[iconv] = 0;
 while(prod(iconv) < 0.5 & ibreak < nbreak) {
   ibreak=ibreak+1

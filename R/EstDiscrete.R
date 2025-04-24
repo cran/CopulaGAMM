@@ -13,11 +13,11 @@
 #' @param LB      lower bound for the parameters.
 #' @param UB      upper bound for the parameters.
 #' @param nq      number of nodes and weighted for Gaussian quadrature of the product of conditional copulas; default is 25.
-#' @param dfC     degrees of freedom for a Student margin; default is 0.
+#' @param dfC     degrees of freedom for a Student margin; default is NULL.
 #' @param offset  offset (default is NULL)
 #' @param prediction  logical variable for prediction of latent variables V (default is TRUE).
 #'
-#' @return \item{coefficients}{Estimated parameters}
+#' @return \item{coefficients}{List of estimated parameters: copula, margin, size}
 #' @return \item{sd}{Standard deviations of the estimated parameters}
 #' @return \item{tstat}{T statistics for the estimated parameters}
 #' @return \item{pval}{P-values of the t statistics for the estimated parameters}
@@ -57,22 +57,22 @@ EstDiscrete=  function(y,model,family, rot = 0, clu,
                           xc=NULL,xm=NULL,start, LB, UB, nq=25,
                           dfC=NULL,offset=NULL, prediction=TRUE)
 {
-  
-  if(model=="bernoulli"){model=="binomial"}
+
+  if(model=="bernoulli"){model="binomial"}
   switch(model,
-         "binomial" = { disc= 1  },
-         
-         "poisson" = {  disc = 2 },
-         
-         "nbinom" = {   disc = 3 },
-         
-         "geometric" = { disc = 4  },
-         
+         "binomial"   = { disc= 1  },
+
+         "poisson"     = {  disc = 2 },
+
+         "nbinom"      = {   disc = 3 },
+
+         "geometric"   = { disc = 4  },
+
          "multinomial" = { disc = 5  }
-         
+
   )
-  
-  
+
+
   d = length(y)
   L=2
   z=y
@@ -200,9 +200,10 @@ EstDiscrete=  function(y,model,family, rot = 0, clu,
       thCk = thC[ind]
       out0=linkCop(thCk,family)
       thC0 = out0$cpar
+      thC1 = rep(thC0,nq)
       thCd = out0$hder*Matxck
-      tem = coplik(uu,nn,family,rot,thC0,dfC,TRUE)
-      if(disc>=2){ tem0 = coplik(vv,nn,family,rot,thC0,dfC,FALSE)}
+      tem = coplik(uu,nn,family,rot,thC1,dfC,TRUE)
+      if(disc>=2){ tem0 = coplik(vv,nn,family,rot,thC1,dfC,FALSE)}
 
 
       if(disc==1){
@@ -218,8 +219,8 @@ EstDiscrete=  function(y,model,family, rot = 0, clu,
         tem3v = tem0[,3]
         tem1[tem1 < 1e-20] = 1e-20
       }
-      
-      
+
+
       mat1 = matrix(tem1,ncol=nq)
       lmat = colSums(log(mat1))
       lmax = max(lmat)
@@ -236,16 +237,30 @@ EstDiscrete=  function(y,model,family, rot = 0, clu,
 
       M=matrix(tem2/tem1,nrow=nq,byrow=TRUE)
 
-      grd[k,1:k1] =   - sum(thCd*colSums(wprd*M))/intf
+      wprd=wprd/intf #new
+      MMM=thCd*colSums(wprd*M)
+      if(k1==1)
+      {MMM = as.matrix(MMM)}
 
-      
-      if(disc==1) grd[k,k1+(1:k2)] =  - colSums( wprd*matrix(tem3/tem1,nrow=nq,byrow=TRUE)%*%uu1 )/intf;
+      grd[k,1:k1] =   - colSums(MMM)
+
+
+
+      if(disc==1){
+        MMM=wprd*matrix(tem3/tem1,nrow=nq,byrow=TRUE)%*%uu1
+        if(k2==1){MMM=as.matrix(MMM)}
+        grd[k,k1+(1:k2)] =  - colSums(MMM);
+      }
       if(disc>=2){
         Mv = matrix(tem3v/tem1,nrow=nq,byrow=TRUE)
         Mu = matrix(tem3u/tem1,nrow=nq,byrow=TRUE)
-        grd[k,k1+(1:Lk2)] =  colSums( wprd*Mu%*%uu1 -wprd*Mv%*%vv1)/intf }
+        MMM=wprd*Mu%*%uu1 -wprd*Mv%*%vv1
+        if(Lk2==1)
+        {MMM = as.matrix(MMM)}
+        grd[k,k1+(1:Lk2)] =  colSums(MMM)
+        }
       if(disc==3){
-        grd[k,k1+k2+1] =   sum(wprd*Mu%*%uu2- wprd*Mv%*%vv2 )/intf;  }
+        grd[k,k1+k2+1] =   sum(wprd*Mu%*%uu2- wprd*Mv%*%vv2 );  }
     }
 
     grdsum = colSums(grd)
@@ -263,7 +278,7 @@ EstDiscrete=  function(y,model,family, rot = 0, clu,
   parM = matrix(par[(k1+1):(k1+(L-1)*k2)],ncol=k2,byrow=TRUE)
   size=NULL
   if(disc==3){size = par[k1+k2+1]}
-  k = length(par)
+  k = length(size)+length(parC)+length(parM)
   LL = mle$minimum #-log-likelihood
   AIC = 2*k+2*LL
   BIC = k*log(d)+2*LL
@@ -324,7 +339,7 @@ EstDiscrete=  function(y,model,family, rot = 0, clu,
       Matxck = Matxc[ind,]
       nclk = clu[ind]
       thC0k=thC0[ind]
-
+#print(k)
       vv = v[ind]
       uu = u[ind]
 
@@ -344,9 +359,9 @@ EstDiscrete=  function(y,model,family, rot = 0, clu,
   out=list(coefficients=coef, sd = st.dev, tstat=tstat, pval=pval,
            gradient=mle$gradient,loglik=-LL, aic=AIC,bic=BIC,cov=covar,
            grd=grd,clu=clu,Matxc=Matxc,Matxm=Matxm, cluster=cluster, V=V,
-           family=family,thC0=thC0,thF=thF, dfC=dfC, rot=rot,model=model,disc=disc)
+           family=family,thC0=thC0,thF=thF, dfC=dfC, dfM=NULL,rot=rot,model=model,disc=disc)
 
- # class(out) <- "EstDiscrete"
+#  class(out) <- "EstDiscrete"
   out
 
 

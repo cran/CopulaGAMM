@@ -30,6 +30,7 @@ MAP.discrete = function(vv,uu,family,rot,thC0k,dfC=NULL,nq=35){
   wl=gl$weights
   diff = (abs(vv-uu) < 1e-5)
   uu[diff] = vv[diff] - 1e-5
+  uu=pmax(uu,0)#new
   vvv=rep(vv,nq)
   uuu=rep(uu,nq)
   nn=rep(nl,each=d)
@@ -41,6 +42,9 @@ MAP.discrete = function(vv,uu,family,rot,thC0k,dfC=NULL,nq=35){
 
 
   pdf=matrix(tem-tem1,ncol=nq)
+  pdf0=as.vector(pdf)
+  pdf0=pmax(1e-100,pdf0)
+  pdf=matrix(pdf0,ncol=nq)
   #den=matrixStats::colProds(adj*pdf)
 
   lden=colSums(log(pdf))
@@ -56,6 +60,9 @@ MAP.discrete = function(vv,uu,family,rot,thC0k,dfC=NULL,nq=35){
     temx1=pcond(uuu,nnx,family,rot,param,dfC)
 
     pdfx=matrix(temx-temx1,ncol=nq)
+    pdfx0=as.vector(pdfx)
+    pdfx0=pmax(1e-100,pdfx0)
+    pdfx=matrix(pdfx0,ncol=nq)
     #denx=matrixStats::colProds(adj*pdfx)
 
     lpdfx=colSums(log(pdfx))

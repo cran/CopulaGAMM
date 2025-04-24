@@ -14,7 +14,7 @@
 #' @param dfM     degrees of freedom for the Student margins (default is NULL)
 #' @param offset  offset for the margins (default is NULL)
 #'
-#' @return \item{y}{Simulated response}
+#' @return \item{out}{List of simulated responses (y) and cluster factors (V)}
 #'
 #' @author  Bruno N. Remillard
 #' @return \item{y}{Simulated values}
@@ -28,7 +28,7 @@
 #' parC = 0 # yields tau = 0.5 for Clayton
 #' parM= c(1,-1,4)
 #' xm = runif(N)
-#' y=SimGenCluster(parC,parM,xm,family="clayton",rot=90,clu=clu,model="gaussian")
+#' y=SimGenCluster(parC,parM,xm,family="clayton",rot=90,clu=clu,model="gaussian")$y
 #' @export
 #'
 SimGenCluster<-function(parC, parM, clu, xc=NULL, xm=NULL,
@@ -82,15 +82,9 @@ SimGenCluster<-function(parC, parM, clu, xc=NULL, xm=NULL,
   U = rep(0,N)
   y = rep(0,N)
 
-  if(family=="t") cpari = cbind(cpar,dfC)
+  if(family=="t") cpar = cbind(cpar,dfC)
 
   U=qcond(w,V,family=family,cpar,rot)
-
-  #for(i in 1:N){
-  #  cpari = cpar[i]
-  #  if(family=="t") cpari = c(cpari,dfC)
-  #  U[i]=qcond(w[i],V[i],family=family,cpari,rot)
-  #  }
 
 
   switch(model,
@@ -145,7 +139,7 @@ SimGenCluster<-function(parC, parM, clu, xc=NULL, xm=NULL,
 
   )
   }
-  return(y)
-
+ out=list(y=y,V=V)
+out
 }
 

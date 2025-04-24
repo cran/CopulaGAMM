@@ -3,11 +3,11 @@
 #' @param u vector of values in (0,1)
 #' @param v conditioning variable in (0,1)
 #' @param family  copula family: "gaussian" ("normal), "t", "clayton",  "frank", "fgm", "galambos", "gumbel", "joe", "huesler-reiss", "plackett".
-#' @param cpar copula parameter
 #' @param rot    rotation: 0 (default), 90, 180 (survival), or 270
+#' @param cpar copula parameter
 #' @param dfC  degrees of freedom for the Student copula (default is NULL)
 #' @return \item{out}{Copula density}
-#' @author Pavel Krupskii and Bruno Remillard Mai 1, 2023
+#' @author Pavel Krupskii and Bruno Remillard, May 1, 2023
 #' @return \item{out}{Vector of pdf values}
 #' @examples
 #' out = dcop(0.3,0.7,"clayton",270,2)
@@ -180,11 +180,12 @@ dfrk=function(u,v,cpar)
 #'
 dmtcj=function(u,v,cpar)
 { tem1=u^(-cpar); tem2=v^(-cpar);
-  pdf=(tem1+tem2-1)^(-1/cpar-2)*(1+cpar)*tem1*tem2/(u*v)
-  pdf
-  pdf[v<1e-4]=0
-  pdf[u<1e-4]=0
-  pdf
+pdf=(tem1+tem2-1)^(-1/cpar-2)*(1+cpar)*tem1*tem2/(u*v)
+pdf
+pdf[v<1e-4]=0
+pdf[u<1e-4]=0
+pdf[cpar>100]=0
+pdf
 
 }
 
@@ -320,7 +321,7 @@ dbvncop=function(u,v,cpar)
 #'
 dbvtcop=function(u,v,cpar,dfC)
 {
-  rh=cpar; nu=dfC
+  rh=cpar; n=length(rh); nu=rep(dfC,n)
   con=exp(lgamma((nu+2.)/2.)-lgamma(nu/2.))/(pi*nu);
   con=con/sqrt(1.-rh*rh);
   ex=-(nu+2.)/2.;

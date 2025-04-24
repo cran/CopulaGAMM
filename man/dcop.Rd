@@ -31,5 +31,5 @@ Evaluates the copula density at given points (u,v)#'
 out = dcop(0.3,0.7,"clayton",270,2)
 }
 \author{
-Pavel Krupskii and Bruno Remillard Mai 1, 2023
+Pavel Krupskii and Bruno Remillard, May 1, 2023
 }

@@ -42,7 +42,7 @@ SimGenCluster(
 \item{offset}{offset for the margins (default is NULL)}
 }
 \value{
-\item{y}{Simulated response}
+\item{out}{List of simulated responses (y) and cluster factors (V)}
 
 \item{y}{Simulated values}
 }
@@ -58,7 +58,7 @@ clu=rep(c(1:K),each=n)
 parC = 0 # yields tau = 0.5 for Clayton
 parM= c(1,-1,4)
 xm = runif(N)
-y=SimGenCluster(parC,parM,xm,family="clayton",rot=90,clu=clu,model="gaussian")
+y=SimGenCluster(parC,parM,xm,family="clayton",rot=90,clu=clu,model="gaussian")$y
 }
 \author{
 Bruno N. Remillard
